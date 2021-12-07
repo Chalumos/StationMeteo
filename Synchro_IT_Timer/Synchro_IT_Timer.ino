@@ -29,10 +29,11 @@ ISR(TIMER3_OVF_vect)
   SREG |= B10000000; // Autoriser toutes les IT/
 }
 /*--------------------------------------------------------------------------------------------*/
-
+const int led = 12;
 void setup ()
 {
   Serial.begin (115200);
+  pinMode(led,OUTPUT);
   
 	// Initialisation des registres du Timer3
   //  - Définition d'une base de temps de 0.25s
@@ -57,12 +58,14 @@ void loop ()
 {
 	if (T_Time_Out_Evenement1 <= 0)
 	{
+   digitalWrite(led, HIGH);
 	  Tache1 ();
     T_Time_Out_Evenement1 = T_EVNT1;
 	}
 
   if (T_Time_Out_Evenement2 <= 0)
   {
+     digitalWrite(led, LOW);
     Tache2 ();
     T_Time_Out_Evenement2 = T_EVNT2;
   }
