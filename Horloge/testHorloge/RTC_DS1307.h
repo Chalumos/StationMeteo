@@ -5,24 +5,24 @@
 #include <Arduino.h>
 
 // Définition de type de données pour gestion de la date
-    struct date {
+    struct horlogeDate {
         uint8_t jour_semaine;
         uint8_t jour_mois;
         uint8_t mois;
         uint8_t annee;
-    } date;
+    };
 
 // Définition de type de données pour gestion de l'heure
-    struct heure {
+    struct horlogeHeure {
         uint8_t seconde;
         uint8_t minute;
         uint8_t heure;
-    } heure;
+    };
 
 // Définition de type de données pour gestion de la date et l'heure sur RTC DS1307
  struct horloge_RTC {
-       heure heure;
-       date date;
+       horlogeHeure h;
+       horlogeDate d;
     };
   
 
