@@ -49,7 +49,7 @@
 
 
 // Fichier d'en tête spécifiques
-//#include "RTC_DS1307.h"       // Pour le circuit d'horloge RTC DS1307
+#include "RTC_DS1307.h"       // Pour le circuit d'horloge RTC DS1307
 //#include "GPS.h"              // Pour le module GPS
 //#include "Calendrier.h"       // Pour gestion correction date et heure
 //#include "Affichage.h"        // Pour affichage sur le terminal série
@@ -80,6 +80,12 @@
 
 
 // - Pour la gestion de l'heure et de la date
+#define TCNT1_TIMER1 61610U // Période entre 2 IT Timer1 sur Overflow registre de comptage (environ 0.25s)
+int t_horloge = 4;
+volatile int tTimeOut = t_horloge;
+const int rtc = 8;
+horloge_RTC horlogeRtc;
+//DS1307 clock;
 
 // - Pour la gestion de la mise à jour de l'horloge RTC via GPS
 
@@ -101,7 +107,14 @@
 // Routine d'IT TImer1 sur Overflow registre de comptage
 ISR(TIMER1_OVF_vect)
 {
+   TIMSK1 &= B11111110; // Bloquer les IT Timer 1
   
+  tTimeOut --;
+    
+  TIFR1 |= B00000001; // Réarmer à 1 le flag TOV1 de l'IT Timer 1
+  TCNT1 = TCNT1_TIMER1; // Recharger le registre de comptage du Timer 1 
+  TIMSK1 |= B0000001; // Autoriser les IT Timer 1
+  SREG |= B10000000; // Autoriser toutes les IT/
 }
 /*--------------------------------------------------------------------------------------------*/
 // Routine d'IT TImer3 sur Overflow registre de comptage
@@ -166,6 +179,21 @@ void setup(void)
   
   // Acquisition de la date et de l'heure courantes
 
+   noInterrupts(); // Bloquer toutes les interruptions
+    TCCR1A = B00000000; // TCCR1A = Ox00 Mode normal
+    TCCR1B = B00000000; // Mode normal, Timer 1 arrété
+    TCCR1C = 0B00000000;
+    TIFR1 |= B00000001; // Pour que les IT Timer 1 puissent être prises en compte; Mise à 1 du bit TOV1
+    TIMSK1 |= B00000001; // Pour autoriser les IT sur débordement Timer 1; Mise à 1 du bit TOEI1
+    TCNT1 = TCNT1_TIMER1; // Charger le contenu du registre de comptage du Timer 1
+    interrupts (); // Autoriser toutes les interruptions
+    TCCR1B |= B00000101; // Pour définir valeur de prescaler Timer 1 à 1024 et démarrer le compteur
+
+   pinMode(rtc,INPUT);
+   
+  
+  //startClock();
+
   // Initialisations des différents flags et variables de contrôle
   
 }
@@ -175,7 +203,18 @@ void loop()
   // Gestion du rétroéclairage : optionnel
   
   // Gestion du rafraichissement de l'affichage de la date, heure, indicateursynchro GPS,...
-  
+    if(tTimeOut <= 0){
+      startClock();
+      horlogeRtc.horaire.seconde = 20; // revoir fct setTime
+      setTime(horlogeRtc);
+      horlogeRtc = getTime();
+      Serial.println("Time seconde");
+      Serial.println(horlogeRtc.horaire.seconde);
+      stopClock();
+    //lecture date heure et affichage
+    // remise à 1 de tTimeOut
+    tTimeOut = t_horloge;
+  }
 
   // Acquisition des données capteur BME680 et MàJ cumul pression
   
