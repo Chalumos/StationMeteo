@@ -8,7 +8,10 @@
 
 #include <Arduino.h>
 
-#define DS1307_I2C_ADDRESS 0x68
+// Définition de constantes symboliques
+// Circuit RTC DS1307 : adressage I2C
+#define DS1307_I2C_ADDRESS 0x68 // adresse I2C du circuit DS1307 : 110 1000  
+#define ADR_REG_SECONDE B00000000 // adresse du registre des secondes
 
 #define MON 1
 #define TUE 2
@@ -19,26 +22,25 @@
 #define SUN 7
 
 // Définition de type de données pour gestion de la date
-struct horlogeDate {
+typedef struct {
         uint8_t jour_semaine;
         uint8_t jour_mois;
         uint8_t mois;
         uint8_t annee;
-    };
+    } horlogeDate;
+    
 // Définition de type de données pour gestion de l'heure
-struct horlogeHeure {
+typedef struct {
         uint8_t seconde;
         uint8_t minute;
         uint8_t heure;
-    };
+    } horlogeHeure;
 
 // Définition de type de données pour gestion de la date et l'heure sur RTC DS1307
-struct horloge_RTC {
+typedef struct {
        horlogeHeure horaire;
        horlogeDate calendrier;
-    };
-  
-
+    }horloge_RTC;
 
 // Définition de type de données pour gestion des fuseaux horaires
 
@@ -50,14 +52,8 @@ struct horloge_RTC {
     void stopClock(void);
     void setTime(horloge_RTC horloge);
     horloge_RTC getTime(void);
-    void fillByHMS(uint8_t _hour, uint8_t _minute, uint8_t _second);
-    void fillByYMD(uint16_t _year, uint8_t _month, uint8_t _day);
-    void fillDayOfWeek(uint8_t _dow);
 
 
 
-// Définition de constantes symboliques
-// Circuit RTC DS1307 : adressage I2C
-#define DS1307_I2C_ADDRESS 0x68 // adresse I2C du circuit DS1307 : 110 1000
-#define ADR_REG_SECONDE B00000000 // adresse du registre des secondes
+
 #endif

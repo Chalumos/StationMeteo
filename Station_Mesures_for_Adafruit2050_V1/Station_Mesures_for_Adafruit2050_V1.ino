@@ -85,7 +85,6 @@ int t_horloge = 4;
 volatile int tTimeOut = t_horloge;
 const int rtc = 8;
 horloge_RTC horlogeRtc;
-//DS1307 clock;
 
 // - Pour la gestion de la mise à jour de l'horloge RTC via GPS
 
@@ -190,10 +189,9 @@ void setup(void)
     TCCR1B |= B00000101; // Pour définir valeur de prescaler Timer 1 à 1024 et démarrer le compteur
 
    pinMode(rtc,INPUT);
-   
+   startClock();     
   
-  //startClock();
-
+   // stopClock();
   // Initialisations des différents flags et variables de contrôle
   
 }
@@ -204,13 +202,23 @@ void loop()
   
   // Gestion du rafraichissement de l'affichage de la date, heure, indicateursynchro GPS,...
     if(tTimeOut <= 0){
-      startClock();
-      horlogeRtc.horaire.seconde = 20; // revoir fct setTime
-      setTime(horlogeRtc);
       horlogeRtc = getTime();
-      Serial.println("Time seconde");
+      Serial.print("Time => ");
+      Serial.print(horlogeRtc.horaire.heure);
+      Serial.print(" : ");
+      Serial.print(horlogeRtc.horaire.minute);
+      Serial.print(" : ");
       Serial.println(horlogeRtc.horaire.seconde);
-      stopClock();
+      Serial.print("Date => ");
+      Serial.print(horlogeRtc.calendrier.jour_semaine);
+      Serial.print(" / ");
+      Serial.print(horlogeRtc.calendrier.jour_mois);
+      Serial.print(" / ");
+      Serial.print(horlogeRtc.calendrier.mois);
+      Serial.print(" / ");
+      Serial.println(horlogeRtc.calendrier.annee);
+
+
     //lecture date heure et affichage
     // remise à 1 de tTimeOut
     tTimeOut = t_horloge;

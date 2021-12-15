@@ -92,7 +92,7 @@ horloge_RTC getTime() {
     horloge.calendrier.jour_semaine  = bcdToDec(Wire.read());
     horloge.calendrier.jour_mois = bcdToDec(Wire.read());
     horloge.calendrier.mois      = bcdToDec(Wire.read());
-    horloge.calendrier.annee       = bcdToDec(Wire.read());
+    horloge.calendrier.annee       =bcdToDec( Wire.read());
 
     return horloge;
 }
@@ -100,6 +100,8 @@ horloge_RTC getTime() {
 
 /*Frunction: Write the time that includes the date to the RTC chip */
 void setTime(horloge_RTC horloge) {
+    Serial.println("seconde setTime ");
+    Serial.println(horloge.horaire.seconde);
     Wire.beginTransmission(DS1307_I2C_ADDRESS);
     Wire.write((uint8_t)0x00);
     Wire.write(decToBcd( horloge.horaire.seconde));// 0 to bit 7 starts the clock
@@ -110,20 +112,6 @@ void setTime(horloge_RTC horloge) {
     Wire.write(decToBcd( horloge.calendrier.mois));
     Wire.write(decToBcd(horloge.calendrier.annee));
     Wire.endTransmission();
-}
-void fillByHMS(uint8_t _hour, uint8_t _minute, uint8_t _second) {
-    // assign variables
-     horloge.horaire.heure = _hour;
-     horloge.horaire.minute = _minute;
-     horloge.horaire.seconde = _second;
-}
-void fillByYMD(uint16_t _year, uint8_t _month, uint8_t _day) {
-    horloge.calendrier.annee = _year - 2000;
-    horloge.calendrier.mois = _month;
-    horloge.calendrier.jour_mois = _day;
-}
-void fillDayOfWeek(uint8_t _dow) {
-   horloge.calendrier.jour_semaine = _dow;
 }
 
 
