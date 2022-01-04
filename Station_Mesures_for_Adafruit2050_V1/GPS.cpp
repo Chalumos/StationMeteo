@@ -53,6 +53,11 @@ Contenu du tableau de chaînes de caractéres GPRMC_Data
 // Récupérer message depuis le module GPS
 /*--------------------------------------------------------------------------------------------*/
 // Ici votre code
+void GetGPS_Msg(){
+  int msg = Serial.read();
+  Serial.println(msg);
+  
+}
 /*--------------------------------------------------------------------------------------------*/
 // Parser un message NMEA
 // Paramètre d'entrée : le message NMEA à parser

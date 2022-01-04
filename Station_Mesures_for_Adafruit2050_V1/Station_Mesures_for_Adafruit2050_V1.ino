@@ -50,7 +50,7 @@
 
 // Fichier d'en tête spécifiques
 #include "RTC_DS1307.h"       // Pour le circuit d'horloge RTC DS1307
-//#include "GPS.h"              // Pour le module GPS
+#include "GPS.h"              // Pour le module GPS
 //#include "Calendrier.h"       // Pour gestion correction date et heure
 //#include "Affichage.h"        // Pour affichage sur le terminal série
 //#include "TFT_Affichage.h"    // Pour affichage sur l'écran TFT
@@ -85,6 +85,9 @@ int t_horloge = 4;
 volatile int tTimeOut = t_horloge;
 const int rtc = 8;
 horloge_RTC horlogeRtc;
+
+unsigned char buffer[64];                   // buffer array for data receive over serial port
+int count=0;                                // counter for buffer array
 
 // - Pour la gestion de la mise à jour de l'horloge RTC via GPS
 
@@ -157,6 +160,20 @@ void setup(void)
 
   // Lancer le démarrage de la RTC DS1307 et init de la date et de l'heure
 
+     noInterrupts(); // Bloquer toutes les interruptions
+    TCCR1A = B00000000; // TCCR1A = Ox00 Mode normal
+    TCCR1B = B00000000; // Mode normal, Timer 1 arrété
+    TCCR1C = 0B00000000;
+    TIFR1 |= B00000001; // Pour que les IT Timer 1 puissent être prises en compte; Mise à 1 du bit TOV1
+    TIMSK1 |= B00000001; // Pour autoriser les IT sur débordement Timer 1; Mise à 1 du bit TOEI1
+    TCNT1 = TCNT1_TIMER1; // Charger le contenu du registre de comptage du Timer 1
+    interrupts (); // Autoriser toutes les interruptions
+    TCCR1B |= B00000101; // Pour définir valeur de prescaler Timer 1 à 1024 et démarrer le compteur
+    //horlogeRtc.horaire.heure = 12;
+    //setTime(horlogeRtc);
+   pinMode(rtc,INPUT);
+   startClock();  
+
   Serial.println ("Initialisation RTC : done");
 
   // Initialisation du capteur BME680
@@ -178,29 +195,18 @@ void setup(void)
   
   // Acquisition de la date et de l'heure courantes
 
-   noInterrupts(); // Bloquer toutes les interruptions
-    TCCR1A = B00000000; // TCCR1A = Ox00 Mode normal
-    TCCR1B = B00000000; // Mode normal, Timer 1 arrété
-    TCCR1C = 0B00000000;
-    TIFR1 |= B00000001; // Pour que les IT Timer 1 puissent être prises en compte; Mise à 1 du bit TOV1
-    TIMSK1 |= B00000001; // Pour autoriser les IT sur débordement Timer 1; Mise à 1 du bit TOEI1
-    TCNT1 = TCNT1_TIMER1; // Charger le contenu du registre de comptage du Timer 1
-    interrupts (); // Autoriser toutes les interruptions
-    TCCR1B |= B00000101; // Pour définir valeur de prescaler Timer 1 à 1024 et démarrer le compteur
-
-   pinMode(rtc,INPUT);
-   startClock();     
-  
-   // stopClock();
   // Initialisations des différents flags et variables de contrôle
   
 }
 /*--------------------------------------------------------------------------------------------*/
 void loop() 
 {
+  //GetGPS_Msg();
   // Gestion du rétroéclairage : optionnel
   
   // Gestion du rafraichissement de l'affichage de la date, heure, indicateursynchro GPS,...
+  
+  //lecture date heure et affichage
     if(tTimeOut <= 0){
       horlogeRtc = getTime();
       Serial.print("Time => ");
@@ -219,7 +225,7 @@ void loop()
       Serial.println(horlogeRtc.calendrier.annee);
 
 
-    //lecture date heure et affichage
+    
     // remise à 1 de tTimeOut
     tTimeOut = t_horloge;
   }

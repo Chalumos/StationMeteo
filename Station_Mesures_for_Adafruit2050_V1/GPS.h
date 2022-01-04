@@ -7,3 +7,5 @@
 
 
 // Fonctions prototypes
+
+void GetGPS_Msg();
