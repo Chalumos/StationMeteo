@@ -3,6 +3,7 @@ void bufferArray();
 void clearBufferArray();
 void parscer();
 unsigned char buffer[64];
+char *ptr;
 
 char str[] = "salut,toi";
 char delim[] = ",";
@@ -10,7 +11,7 @@ char delim[] = ",";
 
 int count=0;   
 int afficherCarac = 0;
-char *ptr = strtok(buffer, delim);
+
 
 void setup() {
   Serial1.begin(9600);
@@ -18,22 +19,21 @@ void setup() {
 }
 
 void loop() {
+  //Serial.write("super la meteo \n");
   if (Serial1.available())                    
     { 
         while(Serial1.available())            
-        {
-//          Serial.write(Serial1.read(),count);
-         
-            buffer[count++]=Serial1.read(); 
+        { 
+            buffer[count++]=Serial.read(); 
             //if(count == 64)break;
           }  
    }
         //bufferArray();
-        
-        parscer();
+        //ptr = strtok(str, delim);
+        //parscer();
         //*gpsStream =  strtok(gpsStream,",");
         //Serial.println(gpsStream);
-        //Serial.write(buffer,count);    
+        Serial.write(buffer,count);    
         //Serial.print("\n");          
         clearBufferArray();                      
         count = 0;                               
@@ -64,6 +64,7 @@ void bufferArray()
   }
 }
 void parscer(){
+  //Serial.println(ptr);
    while (ptr != NULL)
   {
     Serial.println(ptr);
