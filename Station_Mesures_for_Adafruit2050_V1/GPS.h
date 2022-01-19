@@ -8,4 +8,5 @@
 
 // Fonctions prototypes
 
-void GetGPS_Msg();
+char* get_msg();
+char** parscer(char* NMEA);

@@ -81,6 +81,9 @@
 
 // - Pour la gestion de l'heure et de la date
 #define TCNT1_TIMER1 61610U // Période entre 2 IT Timer1 sur Overflow registre de comptage (environ 0.25s)
+
+
+
 int t_horloge = 4;
 volatile int tTimeOut = t_horloge;
 const int rtc = 8;
@@ -227,7 +230,12 @@ void loop()
 
     
     // remise à 1 de tTimeOut
-    tTimeOut = t_horloge;
+    tTimeOut = t_horloge;    
+  }
+ 
+  char** message= parscer( get_msg());
+  for (int i=0;i<str_length(message);i++){
+    Serial.println(message[i]);
   }
 
   // Acquisition des données capteur BME680 et MàJ cumul pression

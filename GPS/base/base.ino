@@ -5,6 +5,7 @@ void bufferArray();
 void parscer();
 int Test_Synchro_GPS();
 
+char test[40];
 char msg[15][10];
 int n=0;
 int m=0;
@@ -26,16 +27,16 @@ void loop()
     {
         while(Serial1.available() && count<=64)               // reading data into char array
         {
-            buffer[count++]=Serial1.read();      // writing data into array
-            //Serial.print("le caractere recupérer est :");
-           // Serial.println(buffer[count-1]);
+           buffer[count++]=Serial1.read();      // writing data into array
+           //Serial.print("le caractere recupérer est :");
+           //Serial.println(buffer[count-1]);
         }
-        //bufferArray();
+        bufferArray();
         //Serial.print("le buffer est :");
         //Serial.println(buffer);
         parscer();
         
-       //Serial.write(buffer,count); // if no data transmission ends, write buffer to hardware serial port
+        Serial.write(buffer,count); // if no data transmission ends, write buffer to hardware serial port
         clearBufferArray();                         // call clearBufferArray function to clear the stored data from the array
         count = 0;                                  // set counter of while loop to zero 
     } 
@@ -51,6 +52,7 @@ void clearBufferArray()                     // function to clear buffer array
 }
 
 void parscer(){
+  char chaine[40];
   for (int i =0;i<64;i++){    
     if (buffer[i] == ',' ){
       msg[n][m]='\0';
@@ -61,14 +63,14 @@ void parscer(){
     else {
       msg[n][m]=buffer[i];
       m++;
-      Serial.println("hifzjfehfzofzehfezhfeho");
+      //Serial.println("hifzjfehfzofzehfezhfeho");
       //delay(500);
            
     }
   }  
 }
 
-void bufferArray()               
+void bufferArray() 
 {
     for (int i=0; i<count;i++)
     {

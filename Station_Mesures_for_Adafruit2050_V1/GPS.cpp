@@ -11,6 +11,8 @@
 #include <Arduino.h>
 #include "GPS.h"
 
+
+
 /*
 Contenu du tableau de chaînes de caractères GPGGA_Data
   [0] nmea_msg; // Nom du message
@@ -53,11 +55,47 @@ Contenu du tableau de chaînes de caractéres GPRMC_Data
 // Récupérer message depuis le module GPS
 /*--------------------------------------------------------------------------------------------*/
 // Ici votre code
-void GetGPS_Msg(){
-  int msg = Serial.read();
-  Serial.println(msg);
-  
+
+char* get_msg(){
+  int count=0;
+  char NMEA[64];
+
+  if (Serial1.available()){
+    while(Serial1.available()){
+      NMEA[count++]=Serial1.read();
+    }
+    NMEA[count]='\0';
+  }
+  return NMEA;
 }
+
+char** parscer(char* NMEA){
+  
+  int index=0;
+  int cpt=0;
+  int caze=0;
+  char** msg;
+  char * pointeur=NMEA;
+  
+  while(NMEA[index]!='\0'){     
+
+    if (NMEA[index] == ',' ){
+      NMEA[index]='\0';
+      msg[caze++]= pointeur;
+      caze++;
+      pointeur=pointeur+cpt+1;
+      cpt=0;
+      index++;
+    }    
+    else {
+      index++;
+      cpt++;
+    }
+  }   
+  msg[caze]=pointeur;
+  return msg;
+}
+
 /*--------------------------------------------------------------------------------------------*/
 // Parser un message NMEA
 // Paramètre d'entrée : le message NMEA à parser
