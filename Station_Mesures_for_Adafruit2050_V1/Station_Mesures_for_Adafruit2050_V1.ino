@@ -77,7 +77,8 @@
 
 
 // - Pour le module GPS
-
+char NMEA[100];
+char * msg[100];
 
 // - Pour la gestion de l'heure et de la date
 #define TCNT1_TIMER1 61610U // Période entre 2 IT Timer1 sur Overflow registre de comptage (environ 0.25s)
@@ -89,8 +90,8 @@ volatile int tTimeOut = t_horloge;
 const int rtc = 8;
 horloge_RTC horlogeRtc;
 
-unsigned char buffer[64];                   // buffer array for data receive over serial port
-int count=0;                                // counter for buffer array
+//unsigned char buffer[64];                   // buffer array for data receive over serial port
+//int count=0;                                // counter for buffer array
 
 // - Pour la gestion de la mise à jour de l'horloge RTC via GPS
 
@@ -134,8 +135,9 @@ void setup(void)
   
   // Initialisation Bus I2C, liaisons série
   Wire.begin(); // Gestion de la prise de contrôle du bus I2C par le Maitre
-  Serial.begin(115200); // Initialiser les paramètres de la sortie série0, moniteur série par défaut
+  //Serial.begin(115200); // Initialiser les paramètres de la sortie série0, moniteur série par défaut
   Serial1.begin (9600); // Initialiser les paramètres de la sortie série1 pour le module GPS
+  Serial.begin (9600);
 
   // Inititialisation de l'écran TFT
   
@@ -210,7 +212,7 @@ void loop()
   // Gestion du rafraichissement de l'affichage de la date, heure, indicateursynchro GPS,...
   
   //lecture date heure et affichage
-    if(tTimeOut <= 0){
+    if(tTimeOut <= 0){/*
       horlogeRtc = getTime();
       Serial.print("Time => ");
       Serial.print(horlogeRtc.horaire.heure);
@@ -229,14 +231,16 @@ void loop()
 
 
     
-    // remise à 1 de tTimeOut
+    // remise à 1 de tTimeOut*/
     tTimeOut = t_horloge;    
-  }
- 
-  char** message= parscer( get_msg());
-  for (int i=0;i<str_length(message);i++){
-    Serial.println(message[i]);
-  }
+  
+    //test();
+    get_msg();
+    parscer(NMEA);
+    /*for (int i=0;i<15;i++){
+      Serial.write(*msg[i]);
+    }*/
+   }
 
   // Acquisition des données capteur BME680 et MàJ cumul pression
   

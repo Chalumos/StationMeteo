@@ -5,8 +5,11 @@
 
 // Définition de constantes symboliques
 
+extern char NMEA[100];
+extern char * msg[100];
 
 // Fonctions prototypes
 
-char* get_msg();
-char** parscer(char* NMEA);
+void get_msg();
+char** parscer(char trame[100]);
+void clearBufferArray();

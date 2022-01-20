@@ -56,33 +56,40 @@ Contenu du tableau de chaînes de caractéres GPRMC_Data
 /*--------------------------------------------------------------------------------------------*/
 // Ici votre code
 
-char* get_msg(){
+
+
+void get_msg(){
   int count=0;
-  char NMEA[64];
+
 
   if (Serial1.available()){
-    while(Serial1.available()){
+    while(Serial1.available() ){
       NMEA[count++]=Serial1.read();
+      if (count==64) break;
     }
+    //Serial.write(NMEA,count);
     NMEA[count]='\0';
+    count=0;
   }
-  return NMEA;
+  //Serial.println(NMEA);
+  //return NMEA;
 }
 
-char** parscer(char* NMEA){
+
+ 
+
+char** parscer(char trame[100]){
   
   int index=0;
   int cpt=0;
   int caze=0;
-  char** msg;
-  char * pointeur=NMEA;
+  char* pointeur=trame;
   
-  while(NMEA[index]!='\0'){     
+  while(trame[index]!='\0'){     
 
-    if (NMEA[index] == ',' ){
-      NMEA[index]='\0';
+    if (trame[index] == ',' ){
+      trame[index]='\0';
       msg[caze++]= pointeur;
-      caze++;
       pointeur=pointeur+cpt+1;
       cpt=0;
       index++;
@@ -93,7 +100,9 @@ char** parscer(char* NMEA){
     }
   }   
   msg[caze]=pointeur;
-  return msg;
+  Serial.write(msg[0]);
+  Serial.write('\n');
+  //return msg;
 }
 
 /*--------------------------------------------------------------------------------------------*/
