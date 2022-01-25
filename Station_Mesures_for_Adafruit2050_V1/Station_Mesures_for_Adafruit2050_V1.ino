@@ -196,7 +196,13 @@ void setup(void)
   Serial.println ("\nFin setup");
   Serial.println ("\nStation_Mesures V1.0 Projet tutore2 2021-2022");
   Serial.println ("Projet tutore2 2021-2022");
-  delay (5000);
+  //delay (5000);
+  delay (1000);
+
+
+  /*FILTRAGE DE SIGNAL GPS*/
+  //Serial1.write("$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n" );  //signal GPRMC
+  //Serial1.write("$PMTK314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n");  //signal GPGGA
   
   // Acquisition de la date et de l'heure courantes
 
@@ -237,6 +243,13 @@ void loop()
     //test();
     get_msg();
     parscer(NMEA);
+    
+    if(Test_Synchro_GPS()) {
+      Serial.println("Signal GPS valide ");
+    }
+    else{
+      Serial.println("Signal GPS invalide attention ! ");
+    }
     /*for (int i=0;i<15;i++){
       Serial.write(*msg[i]);
     }*/

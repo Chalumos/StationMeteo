@@ -61,7 +61,6 @@ Contenu du tableau de chaînes de caractéres GPRMC_Data
 void get_msg(){
   int count=0;
 
-
   if (Serial1.available()){
     while(Serial1.available() ){
       NMEA[count++]=Serial1.read();
@@ -100,8 +99,13 @@ char** parscer(char trame[100]){
     }
   }   
   msg[caze]=pointeur;
-  Serial.write(msg[0]);
-  Serial.write('\n');
+  /*
+  for(int i = 0; i<16; i++){
+      Serial.write(msg[0]);
+      Serial.write('\n');
+  }
+  */
+
   //return msg;
 }
 
@@ -117,7 +121,18 @@ char** parscer(char trame[100]){
 //  flag = 0 si pas de synchronisation, flag = 1 si synchronisation
 // Valable pour les messages de type GPRMC et GPGGA
 /*--------------------------------------------------------------------------------------------*/
-// Ici votre code
+
+int Test_Synchro_GPS(){
+  if ( (strcmp(msg[0],"$GPRMC") == 0) && (strcmp(msg[2],"A") == 0) ){ 
+    return 1;
+  }
+  else if( (strcmp(msg[0],"$GPGGA") == 0) && (strcmp(msg[6],0) != 0) ){
+    return 1;
+  }
+
+  return 0;
+}
+
 /*--------------------------------------------------------------------------------------------*/
 // Choix du type de message retourné par le module GPS
 // Paramètre : la commande PMTK sous la forme d'une chaine de caractères

@@ -12,4 +12,4 @@ extern char * msg[100];
 
 void get_msg();
 char** parscer(char trame[100]);
-void clearBufferArray();
+int Test_Synchro_GPS();
