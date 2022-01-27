@@ -199,11 +199,11 @@ void setup(void)
   //delay (5000);
   delay (1000);
 
-
   /*FILTRAGE DE SIGNAL GPS*/
-  //Serial1.write("$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n" );  //signal GPRMC
-  //Serial1.write("$PMTK314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n");  //signal GPGGA
-  
+   Serial.println();
+   Serial1.write("$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n" );  //signal GPRMC
+   Serial.println("Format par défaut : GPRMC");
+
   // Acquisition de la date et de l'heure courantes
 
   // Initialisations des différents flags et variables de contrôle
@@ -218,9 +218,26 @@ void loop()
   // Gestion du rafraichissement de l'affichage de la date, heure, indicateursynchro GPS,...
   
   //lecture date heure et affichage
-    if(tTimeOut <= 0){/*
-      horlogeRtc = getTime();
-      Serial.print("Time => ");
+    if(tTimeOut <= 0){
+    
+      //horlogeRtc = getTime();
+
+    // remise à 1 de tTimeOut
+    tTimeOut = t_horloge;    
+  
+    Choix_Msg_NMEA();
+    get_msg();
+    GPS_msg_parse(NMEA);
+ 
+    if(Test_Synchro_GPS()) {
+      horlogeRtc = ExtractionDateHeure();
+      Serial.println("Signal GPS valide ");
+    }
+    else{
+      Serial.println("Signal GPS invalide attention ! ");
+    }
+    
+    Serial.print("Time => ");
       Serial.print(horlogeRtc.horaire.heure);
       Serial.print(" : ");
       Serial.print(horlogeRtc.horaire.minute);
@@ -234,25 +251,6 @@ void loop()
       Serial.print(horlogeRtc.calendrier.mois);
       Serial.print(" / ");
       Serial.println(horlogeRtc.calendrier.annee);
-
-
-    
-    // remise à 1 de tTimeOut*/
-    tTimeOut = t_horloge;    
-  
-    //test();
-    get_msg();
-    parscer(NMEA);
-    
-    if(Test_Synchro_GPS()) {
-      Serial.println("Signal GPS valide ");
-    }
-    else{
-      Serial.println("Signal GPS invalide attention ! ");
-    }
-    /*for (int i=0;i<15;i++){
-      Serial.write(*msg[i]);
-    }*/
    }
 
   // Acquisition des données capteur BME680 et MàJ cumul pression

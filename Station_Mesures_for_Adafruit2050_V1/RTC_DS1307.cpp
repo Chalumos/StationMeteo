@@ -100,8 +100,6 @@ horloge_RTC getTime() {
 
 /*Frunction: Write the time that includes the date to the RTC chip */
 void setTime(horloge_RTC horloge) {
-    Serial.println("seconde setTime ");
-    Serial.println(horloge.horaire.seconde);
     Wire.beginTransmission(DS1307_I2C_ADDRESS);
     Wire.write((uint8_t)0x00);
     Wire.write(decToBcd( horloge.horaire.seconde));// 0 to bit 7 starts the clock
