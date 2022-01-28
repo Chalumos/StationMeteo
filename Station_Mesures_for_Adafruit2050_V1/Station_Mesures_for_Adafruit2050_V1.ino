@@ -225,17 +225,18 @@ void loop()
       
       horlogeRtc = getTime();
 
+      /* acquisition de donné du capteur GPS */
       Choix_Msg_NMEA();
       get_msg();
       GPS_msg_parse(NMEA);
       
       if(Test_Synchro_GPS()) {
-        horlogeRtc = ExtractionDateHeure();
+        horlogeRtc = Extract_date_heure_from_GPS();
       }
       
       affichageDateHeure(horlogeRtc);
       //affichageTestSynchroGPS();
-      //affichageCapteur();
+      affichageCapteur();
       // remise à 1 de tTimeOut
       tTimeOut = t_horloge;   
    }

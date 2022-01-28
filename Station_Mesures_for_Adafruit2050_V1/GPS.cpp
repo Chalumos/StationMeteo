@@ -163,16 +163,22 @@ int testChaine(char str1[6], char str2[6]){
 // Date au format jjmmyy : chaine de caractéres
 // Heure au format hhmmss : chaine de caractéres en temps UTC
 /*--------------------------------------------------------------------------------------------*/
-horloge_RTC ExtractionDateHeure(){
+horloge_RTC Extract_date_heure_from_GPS(){
   
   horloge_RTC newHorloge;
-  if ( (strcmp(msg[0],"$GPRMC") == 0) ){
     /* Date */
   char *date= "";
   char jj[3]= "";
   char mm[3]= "";
   char yy[3]= "";
   date = msg[9];
+
+    /* Horaire */
+  char *horaire= "";
+  char hh[3]= "";
+  char minute[3]= "";
+  char ss[3]= "";
+  horaire = msg[1];
 
   jj[0] = date[0];
   jj[1] = date[1];
@@ -181,19 +187,6 @@ horloge_RTC ExtractionDateHeure(){
   yy[0] = date[4];
   yy[1] = date[5];
 
-  newHorloge.calendrier.jour_mois = atoi(jj);
-  newHorloge.calendrier.mois = atoi(mm);
-  newHorloge.calendrier.annee = atoi(yy);
-  }
-  
-  
-  /* Horaire */
-  char *horaire= "";
-  char hh[3]= "";
-  char minute[3]= "";
-  char ss[3]= "";
-  horaire = msg[1];
-
   hh[0] = horaire[0];
   hh[1] = horaire[1];
   minute[0] = horaire[2];
@@ -201,43 +194,28 @@ horloge_RTC ExtractionDateHeure(){
   ss[0] = horaire[4];
   ss[1] = horaire[5];
 
-  
-  if ( (strcmp(msg[0],"$GPRMC") == 0) ){
-    /* Gestion heure hiver/ete */
-    if (newHorloge.calendrier.mois >= 11 || newHorloge.calendrier.mois <= 3){
-      newHorloge.horaire.heure = atoi(hh) + 1;
-    }
-    else {
-     newHorloge.horaire.heure = atoi(hh);
-    }
+  newHorloge.calendrier.jour_mois = atoi(jj);
+  newHorloge.calendrier.mois = atoi(mm);
+  newHorloge.calendrier.annee = atoi(yy);
+
+
+  /* Gestion heure hiver/ete */
+  if (newHorloge.calendrier.mois >= 11 || newHorloge.calendrier.mois <= 3){
+    newHorloge.horaire.heure = atoi(hh) + 1;
   }
   else {
-     newHorloge.horaire.heure = atoi(hh);
+   newHorloge.horaire.heure = atoi(hh);
   }
  
   newHorloge.horaire.minute = atoi(minute);
   newHorloge.horaire.seconde  = atoi(ss);
 
   return newHorloge;
-  /*
-  Serial.print("Time => ");
-  Serial.print(newHorloge.horaire.heure);
-  Serial.print(" : ");
-  Serial.print(newHorloge.horaire.minute);
-  Serial.print(" : ");
-  Serial.println(newHorloge.horaire.seconde);
- 
-  Serial.print("Date => ");
-  Serial.print(newHorloge.calendrier.jour_mois);
-  Serial.print(" / ");
-  Serial.print(newHorloge.calendrier.mois);
-  Serial.print(" / ");
-  Serial.println(newHorloge.calendrier.annee);
-  */
-  
 }
 /*--------------------------------------------------------------------------------------------*/
 // Conversion coordonnées géographiques GPS en dd°.xxxxxx
 /*--------------------------------------------------------------------------------------------*/
-// Ici votre code
+horloge_RTC Correction_Heure_Date(code) {
+  
+}
 /*--------------------------------------------------------------------------------------------*/
