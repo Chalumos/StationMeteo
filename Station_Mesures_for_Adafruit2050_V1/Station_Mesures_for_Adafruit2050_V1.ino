@@ -52,11 +52,11 @@
 #include "RTC_DS1307.h"       // Pour le circuit d'horloge RTC DS1307
 #include "GPS.h"              // Pour le module GPS
 //#include "Calendrier.h"       // Pour gestion correction date et heure
-//#include "Affichage.h"        // Pour affichage sur le terminal série
+#include "Affichage.h"        // Pour affichage sur le terminal série
 //#include "TFT_Affichage.h"    // Pour affichage sur l'écran TFT
-//#include "BME680_Sensor.h"    // Pour gestion du capteur BME680
+#include "BME680_Sensor.h"    // Pour gestion du capteur BME680
 //#include "Tactile.h"          // Pour gestion de la dalle tactile
-//#include "bsec1.4.7.4.h"      // Pour le capteur BME680 : librairie bsec ver 1.4.7.4
+#include "bsec.h"      // Pour le capteur BME680 : librairie bsec ver 1.4.7.4
 
 // Inclure les bibliothèques pour gestion de l'écran TFT Adafruit 2050
 //#include "Adafruit_GFX.h" // Bibliothéque graphique : primitives d'affichage
@@ -79,6 +79,9 @@
 // - Pour le module GPS
 char NMEA[100];
 char * msg[100];
+
+String output;
+Bsec BME680_iaqSensor;
 
 // - Pour la gestion de l'heure et de la date
 #define TCNT1_TIMER1 61610U // Période entre 2 IT Timer1 sur Overflow registre de comptage (environ 0.25s)
@@ -219,39 +222,24 @@ void loop()
   
   //lecture date heure et affichage
     if(tTimeOut <= 0){
-    
-      //horlogeRtc = getTime();
+      
+      horlogeRtc = getTime();
 
-    // remise à 1 de tTimeOut
-    tTimeOut = t_horloge;    
-  
-    Choix_Msg_NMEA();
-    get_msg();
-    GPS_msg_parse(NMEA);
- 
-    if(Test_Synchro_GPS()) {
-      horlogeRtc = ExtractionDateHeure();
-      Serial.println("Signal GPS valide ");
-    }
-    else{
-      Serial.println("Signal GPS invalide attention ! ");
-    }
-    
-    Serial.print("Time => ");
-      Serial.print(horlogeRtc.horaire.heure);
-      Serial.print(" : ");
-      Serial.print(horlogeRtc.horaire.minute);
-      Serial.print(" : ");
-      Serial.println(horlogeRtc.horaire.seconde);
-      Serial.print("Date => ");
-      Serial.print(horlogeRtc.calendrier.jour_semaine);
-      Serial.print(" / ");
-      Serial.print(horlogeRtc.calendrier.jour_mois);
-      Serial.print(" / ");
-      Serial.print(horlogeRtc.calendrier.mois);
-      Serial.print(" / ");
-      Serial.println(horlogeRtc.calendrier.annee);
+      Choix_Msg_NMEA();
+      get_msg();
+      GPS_msg_parse(NMEA);
+      
+      if(Test_Synchro_GPS()) {
+        horlogeRtc = ExtractionDateHeure();
+      }
+      
+      affichageDateHeure(horlogeRtc);
+      //affichageTestSynchroGPS();
+      //affichageCapteur();
+      // remise à 1 de tTimeOut
+      tTimeOut = t_horloge;   
    }
+   
 
   // Acquisition des données capteur BME680 et MàJ cumul pression
   

@@ -10,15 +10,55 @@
 // - COV en ppm (Concentration des Composés Organo Volatiles)
 
 #include <Arduino.h>
-//#include "bsec1.4.7.4.h"
+#include "bsec.h"
 
-//extern Bsec BME680_iaqSensor;
-//extern String output;
+extern Bsec BME680_iaqSensor;
+extern String output;
 
+
+bsec_virtual_sensor_t sensorList[10] = {
+  BSEC_OUTPUT_RAW_TEMPERATURE,
+  BSEC_OUTPUT_RAW_PRESSURE,
+  BSEC_OUTPUT_RAW_HUMIDITY,
+  BSEC_OUTPUT_RAW_GAS,
+  BSEC_OUTPUT_IAQ,
+  BSEC_OUTPUT_STATIC_IAQ,
+  BSEC_OUTPUT_CO2_EQUIVALENT,
+  BSEC_OUTPUT_BREATH_VOC_EQUIVALENT,
+  BSEC_OUTPUT_SENSOR_HEAT_COMPENSATED_TEMPERATURE,
+  BSEC_OUTPUT_SENSOR_HEAT_COMPENSATED_HUMIDITY,
+};
+
+String  ExtractionDonneesBME680() {
+  
+  unsigned long time_trigger = millis();
+  BME680_iaqSensor.begin(BME680_I2C_ADDR_PRIMARY, Wire);
+  BME680_iaqSensor.updateSubscription(sensorList, 10, BSEC_SAMPLE_RATE_LP);
+  
+  if (BME680_iaqSensor.run()) {  // si on a des donnes
+
+    output = "Température : " + String(BME680_iaqSensor.temperature) + " °C";
+    output += "\n";
+    output += "Pression atmosphérique :  " + String(BME680_iaqSensor.pressure) + " hPa";
+    output += "\n";
+    output += "Taux d'humidité : " + String(BME680_iaqSensor.humidity) + " %";
+    output += "\n";
+    output += "IAQ : " + String(BME680_iaqSensor.iaq);
+    output += "\n";
+    output += "IAQ Accuracy : " + String(BME680_iaqSensor.iaqAccuracy);
+    output += "\n";
+    output += "CO2 : " + String(BME680_iaqSensor.co2Equivalent) + " ppm";
+    output += "\n";
+    output += "COV : " + String(BME680_iaqSensor.breathVocEquivalent) + " ppm";
+
+    return output;
+  }
+  return output;
+}
 /*--------------------------------------------------------------------------------------------*/
 // Fonctions additionnelles de gestions du capteur BME680
 /*--------------------------------------------------------------------------------------------*/
-/*
+
 void errLeds(void) // Gestion de la led sur port 13 en cas d'erreur capteur BME680
 {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -27,9 +67,9 @@ void errLeds(void) // Gestion de la led sur port 13 en cas d'erreur capteur BME6
   digitalWrite(LED_BUILTIN, LOW);
   delay(100);
 }
-*/
+
 /*--------------------------------------------------------------------------------------------*/
-/*
+
 void checkIaqSensorStatus(void) // Vérifier l'état du capteur
 {
   if (BME680_iaqSensor.status != BSEC_OK) 
@@ -62,5 +102,5 @@ void checkIaqSensorStatus(void) // Vérifier l'état du capteur
     }
   }
 }
-*/
+
 /*--------------------------------------------------------------------------------------------*/

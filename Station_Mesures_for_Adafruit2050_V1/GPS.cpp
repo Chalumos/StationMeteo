@@ -67,7 +67,7 @@ void get_msg(){
     NMEA[count]='\0';
     count=0;
   }
-  Serial.println(NMEA);
+  //Serial.println(NMEA);
 }
 
 
@@ -164,8 +164,8 @@ int testChaine(char str1[6], char str2[6]){
 // Heure au format hhmmss : chaine de caractéres en temps UTC
 /*--------------------------------------------------------------------------------------------*/
 horloge_RTC ExtractionDateHeure(){
-  horloge_RTC newHorloge;
   
+  horloge_RTC newHorloge;
   if ( (strcmp(msg[0],"$GPRMC") == 0) ){
     /* Date */
   char *date= "";
