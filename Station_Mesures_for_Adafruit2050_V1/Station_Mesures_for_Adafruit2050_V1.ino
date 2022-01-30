@@ -204,7 +204,8 @@ void setup(void)
 
   /*FILTRAGE DE SIGNAL GPS*/
    Serial.println();
-   Serial1.write("$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n" );  //signal GPRMC
+   Serial1.write("$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n" ); 
+   //Serial1.write("$PMTK314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n");  //signal GPGGA//signal GPRMC
    Serial.println("Format par défaut : GPRMC");
 
   // Acquisition de la date et de l'heure courantes
@@ -229,15 +230,18 @@ void loop()
       Choix_Msg_NMEA();
       get_msg();
       GPS_msg_parse(NMEA);
+
       
       if(Test_Synchro_GPS()) {
-        horlogeRtc = Extract_date_heure_from_GPS();
+        horlogeRtc = Correction_Heure_Date();
       }
+      
       
       affichageDateHeure(horlogeRtc);
       //affichageTestSynchroGPS();
       affichageCapteur();
       // remise à 1 de tTimeOut
+      //zoneUtcConstructeur();
       tTimeOut = t_horloge;   
    }
    

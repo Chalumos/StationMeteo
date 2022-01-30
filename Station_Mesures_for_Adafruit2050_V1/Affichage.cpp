@@ -29,8 +29,8 @@ void affichageDateHeure(horloge_RTC horlogeRtc) {
   Serial.print(" : ");
   Serial.println(horlogeRtc.horaire.seconde);
   Serial.print("Date => ");
-  Serial.print(horlogeRtc.calendrier.jour_semaine);
-  Serial.print(" / ");
+  //Serial.print(horlogeRtc.calendrier.jour_semaine);
+  //Serial.print(" / ");
   Serial.print(horlogeRtc.calendrier.jour_mois);
   Serial.print(" / ");
   Serial.print(horlogeRtc.calendrier.mois);
